@@ -1,26 +1,25 @@
 const venom = require('venom-bot');
-const cron = require('node-cron');
-
-// Números via variáveis de ambiente
-const numeroNamorada = process.env.NUMERO_NAMORADA;
-const meuNumero = process.env.MEU_NUMERO;      
-
-// Palavras-chave positivas e negativas
-const respostasPositivas = ['sim', 'tomei', 'já', 'ja'];
-const respostasNegativas = ['não', 'ainda não'];
 
 venom
   .create({
-    session: 'session',          // nome da sessão
-    folderNameToken: './session', // garante que a pasta da sessão seja criada corretamente
-    multidevice: true,           // WhatsApp multi-dispositivo
-    useChrome: true,             // força uso do Chromium
-    headless: true,              // Chromium em modo headless
-    disableSpins: true,
-    logQR: true                  // mostra QR Code no console se precisar reconectar
+    session: 'session',          // pasta da sessão
+    multidevice: true,           // habilita multi-dispositivo
+    useChrome: false,            // não usa o Chrome completo do Railway
+    headless: true,              // roda sem abrir a interface
+    disableSpins: true,          // desativa animações para economizar recursos
+    browserArgs: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',        // roda tudo em um único processo
+      '--disable-gpu'
+    ]
   })
   .then((client) => start(client))
-  .catch((err) => console.log('Erro ao iniciar bot:', err));
+  .catch((error) => console.log(error));
 
 function start(client) {
   console.log('Bot iniciado!');
