@@ -23,43 +23,39 @@ venom
   .catch((err) => console.log('Erro ao iniciar bot:', err));
 
 function start(client) {
-  console.log('🤖 Bot iniciado!');
+  console.log('Bot iniciado!');
 
   // Agenda mensagem todo dia às 12:00
   cron.schedule('0 12 * * *', () => {
     console.log('Enviando lembrete para ela...');
-    client.sendText(numeroNamorada, 'Oi amor ❤️ já tomou o anticoncepcional hoje?');
+    client.sendText(numeroNamorada, 'Oi amor ❤️ já tomou o remédio hoje?');
 
     let respondeu = false;
 
     // Timeout de 15 minutos
     const timeout = setTimeout(() => {
       if (!respondeu) {
-        client.sendText(meuNumero, '⚠️ Ela ainda não respondeu o lembrete do anticoncepcional.');
+        client.sendText(meuNumero, '⚠️ Ela ainda não respondeu o lembrete do remédio.');
       }
     }, 15 * 60 * 1000); // 15 minutos
 
-    // Listener para mensagens dela
     const listener = (message) => {
       if (message.from === numeroNamorada) {
         const resposta = message.body.toLowerCase();
 
-        // Verifica se contém alguma palavra positiva
         if (respostasPositivas.some(p => resposta.includes(p))) {
           respondeu = true;
           clearTimeout(timeout);
           client.sendText(numeroNamorada, 'Ótimo! Fico tranquilo 😍');
-          client.sendText(meuNumero, '✅ Ela respondeu que já tomou o anticoncepcional.');
+          client.sendText(meuNumero, '✅ Ela respondeu que já tomou o remédio.');
         }
-        // Verifica se contém alguma palavra negativa
         else if (respostasNegativas.some(p => resposta.includes(p))) {
           respondeu = true;
           clearTimeout(timeout);
           client.sendText(numeroNamorada, 'Não esquece, é importante! ❤️');
-          client.sendText(meuNumero, '⚠️ Ela respondeu que ainda não tomou o anticoncepcional.');
+          client.sendText(meuNumero, '⚠️ Ela respondeu que ainda não tomou o remédio.');
         }
 
-        // Remove listener depois de processar
         client.removeListener('onMessage', listener);
       }
     };
